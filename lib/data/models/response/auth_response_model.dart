@@ -5,7 +5,11 @@ class AuthResponseModel {
   final String? token;
   final User? user;
 
-  AuthResponseModel({this.status, this.token, this.user});
+  AuthResponseModel({
+    this.status,
+    this.token,
+    this.user,
+  });
 
   factory AuthResponseModel.fromJson(String str) =>
       AuthResponseModel.fromMap(json.decode(str));

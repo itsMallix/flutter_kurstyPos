@@ -1,8 +1,7 @@
-import 'dart:convert';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_krustypos/core/constants/variable.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_krustypos/data/models/response/aut_response_model.dart';
+import 'package:flutter_krustypos/data/models/response/auth_response_model.dart';
 
 class AuthRemoteDatasource {
   Future<Either<String, AuthResponseModel>> login(
@@ -13,12 +12,14 @@ class AuthRemoteDatasource {
 
     final response = await http.post(
       url,
-      headers: {'Accept': 'application/json'},
-      body: {'email': email, 'password': password},
+      body: {
+        'email': email,
+        'password': password,
+      },
     );
 
     if (response.statusCode == 200) {
-      return Right(AuthResponseModel.fromJson(jsonDecode(response.body)));
+      return Right(AuthResponseModel.fromJson(response.body));
     } else {
       return Left('Failed to login: ${response.body}');
     }

@@ -5,6 +5,7 @@ import 'package:flutter_krustypos/core/components/buttons.dart';
 import 'package:flutter_krustypos/core/components/custom_text_field.dart';
 import 'package:flutter_krustypos/core/components/spaces.dart';
 import 'package:flutter_krustypos/core/constants/colors.dart';
+import 'package:flutter_krustypos/data/datasource/auth_local_datasource.dart';
 import 'package:flutter_krustypos/presentation/auth/bloc/bloc/login_bloc.dart';
 import 'package:flutter_krustypos/presentation/home/dashboard_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -66,7 +67,10 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           const SpaceHeight(40.0),
-          CustomTextField(controller: emailController, label: 'Email'),
+          CustomTextField(
+            controller: emailController,
+            label: 'Email',
+          ),
           const SpaceHeight(12.0),
           CustomTextField(
             controller: passwordController,
@@ -78,7 +82,8 @@ class _LoginPageState extends State<LoginPage> {
             listener: (context, state) {
               state.maybeWhen(
                 orElse: () {},
-                success: (success) {
+                success: (authResponseModel) {
+                  AuthLocalDatasource().saveAuthData(authResponseModel);
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
@@ -86,9 +91,12 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   );
                 },
-                error: (error) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(error), backgroundColor: Colors.red),
+                error: (message) {
+                  return ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text("Failed To Login"),
+                      backgroundColor: Colors.red,
+                    ),
                   );
                 },
               );
@@ -110,7 +118,9 @@ class _LoginPageState extends State<LoginPage> {
                     );
                   },
                   loading: () {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
                   },
                 );
               },
