@@ -6,8 +6,8 @@ import 'package:flutter_krustypos/core/components/custom_text_field.dart';
 import 'package:flutter_krustypos/core/components/spaces.dart';
 import 'package:flutter_krustypos/core/constants/colors.dart';
 import 'package:flutter_krustypos/data/datasource/auth_local_datasource.dart';
-import 'package:flutter_krustypos/presentation/auth/bloc/bloc/login_bloc.dart';
-import 'package:flutter_krustypos/presentation/home/dashboard_page.dart';
+import 'package:flutter_krustypos/presentation/auth/bloc/login/login_bloc.dart';
+import 'package:flutter_krustypos/presentation/home/pages/dashboard_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class LoginPage extends StatefulWidget {

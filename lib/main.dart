@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_krustypos/core/constants/colors.dart';
+import 'package:flutter_krustypos/data/datasource/auth_local_datasource.dart';
 import 'package:flutter_krustypos/data/datasource/auth_remote_datasource.dart';
-import 'package:flutter_krustypos/presentation/auth/bloc/bloc/login_bloc.dart';
+import 'package:flutter_krustypos/presentation/auth/bloc/login/login_bloc.dart';
+import 'package:flutter_krustypos/presentation/auth/bloc/logout/logout_bloc.dart';
 import 'package:flutter_krustypos/presentation/auth/login_page.dart';
+import 'package:flutter_krustypos/presentation/home/pages/dashboard_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
@@ -13,11 +16,17 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => LoginBloc(AuthRemoteDatasource()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => LoginBloc(AuthRemoteDatasource()),
+        ),
+        BlocProvider(
+          create: (context) => LogoutBloc(AuthRemoteDatasource()),
+        ),
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'KrustyPOS',
@@ -38,7 +47,30 @@ class MyApp extends StatelessWidget {
             iconTheme: const IconThemeData(color: AppColors.primary),
           ),
         ),
-        home: LoginPage(),
+        home: FutureBuilder<bool>(
+          future: AuthLocalDatasource().isAuthDataExists(),
+          builder: (context, asyncSnapshot) {
+            if (asyncSnapshot.connectionState == ConnectionState.waiting) {
+              return const Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
+            if (asyncSnapshot.hasData) {
+              if (asyncSnapshot.data!) {
+                return DashboardPage();
+              } else {
+                return LoginPage();
+              }
+            }
+            return const Scaffold(
+              body: Center(
+                child: Text("Error"),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
