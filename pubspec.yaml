@@ -24,6 +24,7 @@ dependencies:
   http: ^1.6.0
   dartz: ^0.10.1
   shared_preferences: ^2.5.4
+  sqflite: ^2.4.2
 
   cupertino_icons: ^1.0.8
 

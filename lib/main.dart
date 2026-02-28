@@ -3,10 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_krustypos/core/constants/colors.dart';
 import 'package:flutter_krustypos/data/datasource/auth_local_datasource.dart';
 import 'package:flutter_krustypos/data/datasource/auth_remote_datasource.dart';
+import 'package:flutter_krustypos/data/datasource/product_remote_datasource.dart';
 import 'package:flutter_krustypos/presentation/auth/bloc/login/login_bloc.dart';
 import 'package:flutter_krustypos/presentation/auth/bloc/logout/logout_bloc.dart';
 import 'package:flutter_krustypos/presentation/auth/login_page.dart';
 import 'package:flutter_krustypos/presentation/home/pages/dashboard_page.dart';
+import 'package:flutter_krustypos/presentation/settings/bloc/bloc/sync_product_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
@@ -25,6 +27,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => LogoutBloc(AuthRemoteDatasource()),
+        ),
+        BlocProvider(
+          create: (context) => SyncProductBloc(ProductRemoteDatasource()),
         ),
       ],
       child: MaterialApp(

@@ -8,6 +8,7 @@ import 'package:flutter_krustypos/presentation/auth/bloc/logout/logout_bloc.dart
 import 'package:flutter_krustypos/presentation/auth/login_page.dart';
 import 'package:flutter_krustypos/presentation/home/pages/home_page.dart';
 import 'package:flutter_krustypos/presentation/home/widgets/nav_item.dart';
+import 'package:flutter_krustypos/presentation/settings/pages/widgets/sync_data_page.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -23,7 +24,7 @@ class _DashboardPageState extends State<DashboardPage> {
     HomePage(),
     const Center(child: Text('Screen 2')),
     const Center(child: Text('Screen 3')),
-    const Center(child: Text('Screen 4')),
+    const SyncDataPage(),
   ];
 
   void _onItemTapped(int index) {
