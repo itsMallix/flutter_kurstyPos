@@ -22,7 +22,7 @@ class ProductLocalDatasource {
         price TEXT,
         stock INTEGER,
         status INTEGER,
-        isDavorite INTEGER,
+        isFavorite INTEGER,
         createdAt TEXT,
         updatedAt TEXT
       )
@@ -45,13 +45,25 @@ class ProductLocalDatasource {
     return _database!;
   }
 
-  Future<void> insertProducts(Product product) async {
+  Future<void> insertProduct(Product product) async {
     final db = await instance.database;
     await db.insert(
       tableProduct,
       product.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+  }
+
+  Future<void> insertProducts(List<Product> products) async {
+    final db = await instance.database;
+    for (var product in products) {
+      await db.insert(
+        tableProduct,
+        product.toLocalMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+      print("berhasil insert ${product.name}");
+    }
   }
 
   Future<List<Product>> getProducts() async {

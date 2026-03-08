@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_krustypos/core/assets/assets.gen.dart';
 import 'package:flutter_krustypos/core/components/spaces.dart';
 import 'package:flutter_krustypos/core/constants/colors.dart';
 import 'package:flutter_krustypos/presentation/home/models/product_model.dart';

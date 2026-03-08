@@ -74,6 +74,24 @@ class Product {
         : DateTime.parse(json["updated_at"]),
   );
 
+  factory Product.fromLocalMap(Map<String, dynamic> json) => Product(
+    id: json["productId"],
+    categoryId: json["categoryId"],
+    name: json["name"],
+    description: json["description"],
+    image: json["image"],
+    price: json["price"],
+    stock: json["stock"],
+    status: json["status"],
+    isFavorite: json["isFavorite"],
+    createdAt: json["createdAt"] == null
+        ? null
+        : DateTime.parse(json["created_at"]),
+    updatedAt: json["updated_at"] == null
+        ? null
+        : DateTime.parse(json["updatedAt"]),
+  );
+
   Map<String, dynamic> toMap() => {
     "id": id,
     "category_id": categoryId,
@@ -86,5 +104,36 @@ class Product {
     "is_favorite": isFavorite,
     "created_at": createdAt?.toIso8601String(),
     "updated_at": updatedAt?.toIso8601String(),
+  };
+
+  // CREATE TABLE $tableProduct (
+  //         id INTEGER PRIMARY KEY,
+  //         productId INTEGER,
+  //         categoyId INTEGER,
+  //         categoryName TEXT,
+  //         name TEXT,
+  //         description TEXT,
+  //         image TEXT,
+  //         price TEXT,
+  //         stock INTEGER,
+  //         status INTEGER,
+  //         isFavorite INTEGER,
+  //         createdAt TEXT,
+  //         updatedAt TEXT
+  //       )
+
+  Map<String, dynamic> toLocalMap() => {
+    "ProductId": id,
+    "categoyId": categoryId,
+    "categoryName": '',
+    "name": name,
+    "description": description,
+    "image": image,
+    "price": price,
+    "stock": stock,
+    "status": status,
+    "isFavorite": isFavorite,
+    "createdAt": createdAt?.toIso8601String(),
+    "updatedAt": updatedAt?.toIso8601String(),
   };
 }

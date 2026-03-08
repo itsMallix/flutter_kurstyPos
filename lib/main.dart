@@ -8,7 +8,7 @@ import 'package:flutter_krustypos/presentation/auth/bloc/login/login_bloc.dart';
 import 'package:flutter_krustypos/presentation/auth/bloc/logout/logout_bloc.dart';
 import 'package:flutter_krustypos/presentation/auth/login_page.dart';
 import 'package:flutter_krustypos/presentation/home/pages/dashboard_page.dart';
-import 'package:flutter_krustypos/presentation/settings/bloc/bloc/sync_product_bloc.dart';
+import 'package:flutter_krustypos/presentation/settings/bloc/sync_product/sync_product_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
