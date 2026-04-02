@@ -4,7 +4,10 @@ class ProductResponseModel {
   final String? status;
   final List<Product>? data;
 
-  ProductResponseModel({this.status, this.data});
+  ProductResponseModel({
+    this.status,
+    this.data,
+  });
 
   factory ProductResponseModel.fromJson(String str) =>
       ProductResponseModel.fromMap(json.decode(str));
@@ -37,6 +40,7 @@ class Product {
   final int? isFavorite;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final Category? category;
 
   Product({
     this.id,
@@ -50,32 +54,34 @@ class Product {
     this.isFavorite,
     this.createdAt,
     this.updatedAt,
+    this.category,
   });
 
   factory Product.fromJson(String str) => Product.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory Product.fromMap(Map<String, dynamic> json) => Product(
-    id: json["id"],
-    categoryId: json["category_id"],
+  factory Product.fromLocalMap(Map<String, dynamic> json) => Product(
+    id: json["productId"],
+    categoryId: json["categoryId"],
+    category: Category(id: json["categoryId"], name: json["categoryName"]),
     name: json["name"],
     description: json["description"],
     image: json["image"],
     price: json["price"],
     stock: json["stock"],
     status: json["status"],
-    isFavorite: json["is_favorite"],
-    createdAt: json["created_at"] == null
+    isFavorite: json["isFavorite"],
+    createdAt: json["createdAt"] == null
         ? null
-        : DateTime.parse(json["created_at"]),
-    updatedAt: json["updated_at"] == null
+        : DateTime.parse(json["createdAt"]),
+    updatedAt: json["updatedAt"] == null
         ? null
-        : DateTime.parse(json["updated_at"]),
+        : DateTime.parse(json["updatedAt"]),
   );
 
-  factory Product.fromLocalMap(Map<String, dynamic> json) => Product(
-    id: json["productId"],
+  factory Product.fromMap(Map<String, dynamic> json) => Product(
+    id: json["id"],
     categoryId: json["categoryId"],
     name: json["name"],
     description: json["description"],
@@ -86,11 +92,29 @@ class Product {
     isFavorite: json["isFavorite"],
     createdAt: json["createdAt"] == null
         ? null
-        : DateTime.parse(json["created_at"]),
-    updatedAt: json["updated_at"] == null
+        : DateTime.parse(json["createdAt"]),
+    updatedAt: json["updatedAt"] == null
         ? null
         : DateTime.parse(json["updatedAt"]),
+    category: json["category"] == null
+        ? null
+        : Category.fromMap(json["category"]),
   );
+
+  Map<String, dynamic> toLocalMap() => {
+    "ProductId": id,
+    "categoryId": categoryId,
+    "categoryName": category?.name,
+    "name": name,
+    "description": description,
+    "image": image,
+    "price": price,
+    "stock": stock,
+    "status": status,
+    "isFavorite": isFavorite,
+    "createdAt": createdAt?.toIso8601String(),
+    "updatedAt": updatedAt?.toIso8601String(),
+  };
 
   Map<String, dynamic> toMap() => {
     "id": id,
@@ -104,36 +128,50 @@ class Product {
     "is_favorite": isFavorite,
     "created_at": createdAt?.toIso8601String(),
     "updated_at": updatedAt?.toIso8601String(),
+    "category": category?.toMap(),
   };
+}
 
-  // CREATE TABLE $tableProduct (
-  //         id INTEGER PRIMARY KEY,
-  //         productId INTEGER,
-  //         categoyId INTEGER,
-  //         categoryName TEXT,
-  //         name TEXT,
-  //         description TEXT,
-  //         image TEXT,
-  //         price TEXT,
-  //         stock INTEGER,
-  //         status INTEGER,
-  //         isFavorite INTEGER,
-  //         createdAt TEXT,
-  //         updatedAt TEXT
-  //       )
+class Category {
+  final int? id;
+  final String? name;
+  final String? description;
+  final String? image;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
-  Map<String, dynamic> toLocalMap() => {
-    "ProductId": id,
-    "categoyId": categoryId,
-    "categoryName": '',
+  Category({
+    this.id,
+    this.name,
+    this.description,
+    this.image,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  factory Category.fromJson(String str) => Category.fromMap(json.decode(str));
+
+  String toJson() => json.encode(toMap());
+
+  factory Category.fromMap(Map<String, dynamic> json) => Category(
+    id: json["id"],
+    name: json["name"],
+    description: json["description"],
+    image: json["image"],
+    createdAt: json["created_at"] == null
+        ? null
+        : DateTime.parse(json["created_at"]),
+    updatedAt: json["updated_at"] == null
+        ? null
+        : DateTime.parse(json["updated_at"]),
+  );
+
+  Map<String, dynamic> toMap() => {
+    "id": id,
     "name": name,
     "description": description,
     "image": image,
-    "price": price,
-    "stock": stock,
-    "status": status,
-    "isFavorite": isFavorite,
-    "createdAt": createdAt?.toIso8601String(),
-    "updatedAt": updatedAt?.toIso8601String(),
+    "created_at": createdAt?.toIso8601String(),
+    "updated_at": updatedAt?.toIso8601String(),
   };
 }

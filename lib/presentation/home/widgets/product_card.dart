@@ -69,7 +69,7 @@ class ProductCard extends StatelessWidget {
                     Flexible(
                       child: FittedBox(
                         child: Text(
-                          data.category.value,
+                          data.category.name,
                           style: const TextStyle(
                             color: AppColors.grey,
                             fontSize: 12,

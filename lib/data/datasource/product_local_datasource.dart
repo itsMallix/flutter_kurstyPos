@@ -70,7 +70,7 @@ class ProductLocalDatasource {
     final db = await instance.database;
     final List<Map<String, dynamic>> maps = await db.query(tableProduct);
     return List.generate(maps.length, (i) {
-      return Product.fromMap(maps[i]);
+      return Product.fromLocalMap(maps[i]);
     });
   }
 
