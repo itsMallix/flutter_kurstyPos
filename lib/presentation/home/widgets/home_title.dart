@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_krustypos/core/components/search_input.dart';
-
-import '../../../../core/core.dart';
+import 'package:flutter_krustypos/core/constants/colors.dart';
+import 'package:flutter_krustypos/core/core.dart';
 
 class HomeTitle extends StatelessWidget {
   final TextEditingController controller;

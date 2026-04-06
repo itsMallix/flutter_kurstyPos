@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_krustypos/core/components/spaces.dart';
 import 'package:flutter_krustypos/core/constants/colors.dart';
-import 'package:flutter_krustypos/presentation/home/models/product_model.dart';
+import 'package:flutter_krustypos/core/constants/variable.dart';
+import 'package:flutter_krustypos/core/core.dart';
+import 'package:flutter_krustypos/core/extensions/string_ext.dart';
+import 'package:flutter_krustypos/data/models/response/product_response_model.dart';
 
 class ProductCard extends StatelessWidget {
-  final ProductModel data;
+  final Product data;
   final VoidCallback onCartButton;
 
   const ProductCard({
@@ -42,8 +45,10 @@ class ProductCard extends StatelessWidget {
                   ),
                   child: ClipRRect(
                     borderRadius: const BorderRadius.all(Radius.circular(40.0)),
-                    child: Image.asset(
-                      data.image,
+                    child: Image.network(
+                      data.image!.contains('http')
+                          ? data.image!
+                          : "${Variable.baseUrl}/${data.image!}",
                       width: 50,
                       height: 50,
                       fit: BoxFit.cover,
@@ -53,7 +58,7 @@ class ProductCard extends StatelessWidget {
                 const Spacer(),
                 FittedBox(
                   child: Text(
-                    data.name,
+                    data.name ?? 'No Name',
                     style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
@@ -69,7 +74,7 @@ class ProductCard extends StatelessWidget {
                     Flexible(
                       child: FittedBox(
                         child: Text(
-                          data.category.name,
+                          data.category!.name!,
                           style: const TextStyle(
                             color: AppColors.grey,
                             fontSize: 12,
@@ -80,7 +85,7 @@ class ProductCard extends StatelessWidget {
                     Flexible(
                       child: FittedBox(
                         child: Text(
-                          data.priceFormat,
+                          data.price!.toIntegerFromText.currencyFormatRp,
                           style: const TextStyle(
                             fontWeight: FontWeight.w700,
                             fontSize: 12,

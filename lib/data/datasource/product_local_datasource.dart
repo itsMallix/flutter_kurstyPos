@@ -14,7 +14,7 @@ class ProductLocalDatasource {
       CREATE TABLE $tableProduct (
         id INTEGER PRIMARY KEY,
         productId INTEGER,
-        categoyId INTEGER,
+        categoryId INTEGER,
         categoryName TEXT,
         name TEXT,
         description TEXT,

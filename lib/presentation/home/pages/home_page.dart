@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_krustypos/core/assets/assets.gen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_krustypos/core/components/buttons.dart';
 import 'package:flutter_krustypos/core/components/spaces.dart';
-import 'package:flutter_krustypos/core/constants/colors.dart';
 import 'package:flutter_krustypos/core/core.dart';
-import 'package:flutter_krustypos/presentation/home/models/product_model.dart';
+import 'package:flutter_krustypos/presentation/home/bloc/local_product/local_product_bloc.dart';
 import 'package:flutter_krustypos/presentation/home/widgets/column_button.dart';
 import 'package:flutter_krustypos/presentation/home/widgets/custom_tab_bar.dart';
 import 'package:flutter_krustypos/presentation/home/widgets/home_title.dart';
@@ -22,27 +21,28 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    searchResults = products;
+    context.read<LocalProductBloc>().add(
+      const LocalProductEvent.getLocalProducts(),
+    );
     super.initState();
   }
 
   void onCategoryTap(int index) {
     searchController.clear();
-    if (index == 0) {
-      searchResults = products;
-    } else {
-      searchResults = products
-          .where((e) => e.category.index.toString().contains(index.toString()))
-          .toList();
-    }
+    // if (index == 0) {
+    // } else {
+    //   searchResults = products
+    //       .where((e) => e.category.index.toString().contains(index.toString()))
+    //       .toList();
+    // }
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    if (products.isEmpty) {
-      return const _IsEmpty();
-    }
+    // if (products.isEmpty) {
+    //   return const _IsEmpty();
+    // }
     return Hero(
       tag: 'confirmation_screen',
       child: Scaffold(
@@ -61,14 +61,14 @@ class _HomePageState extends State<HomePage> {
                         HomeTitle(
                           controller: searchController,
                           onChanged: (value) {
-                            searchResults = products
-                                .where(
-                                  (e) => e.name.toLowerCase().contains(
-                                    value.toLowerCase(),
-                                  ),
-                                )
-                                .toList();
-                            setState(() {});
+                            // searchResults = products
+                            //     .where(
+                            //       (e) => e.name.toLowerCase().contains(
+                            //         value.toLowerCase(),
+                            //       ),
+                            //     )
+                            //     .toList();
+                            // setState(() {});
                           },
                         ),
                         const SizedBox(height: 24),
@@ -81,138 +81,162 @@ class _HomePageState extends State<HomePage> {
                           ],
                           initialTabIndex: 0,
                           tabViews: [
-                            if (searchResults.isEmpty)
-                              const Padding(
-                                padding: EdgeInsets.only(top: 80.0),
-                                child: _IsEmpty(),
-                              )
-                            else
-                              SizedBox(
-                                child: GridView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: searchResults.length,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                        childAspectRatio: 0.85,
-                                        crossAxisCount: 3,
-                                        crossAxisSpacing: 30.0,
-                                        mainAxisSpacing: 30.0,
-                                      ),
-                                  itemBuilder: (context, index) => ProductCard(
-                                    data: searchResults[index],
-                                    onCartButton: () {},
-                                  ),
-                                ),
+                            // if (searchResults.isEmpty)
+                            //   const Padding(
+                            //     padding: EdgeInsets.only(top: 80.0),
+                            //     child: _IsEmpty(),
+                            //   )
+                            // else
+                            SizedBox(
+                              child: BlocBuilder<LocalProductBloc, LocalProductState>(
+                                builder: (context, state) {
+                                  return state.maybeWhen(
+                                    orElse: () => const Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                    loading: () => const Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                    loaded: (products) {
+                                      if (products.isEmpty) {
+                                        return const Center(
+                                          child: Text('No Items'),
+                                        );
+                                      }
+                                      return GridView.builder(
+                                        shrinkWrap: true,
+                                        itemCount: products.length,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        gridDelegate:
+                                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                              childAspectRatio: 0.85,
+                                              crossAxisCount: 3,
+                                              crossAxisSpacing: 30.0,
+                                              mainAxisSpacing: 30.0,
+                                            ),
+                                        itemBuilder: (context, index) =>
+                                            ProductCard(
+                                              data: products[index],
+                                              onCartButton: () {},
+                                            ),
+                                      );
+                                    },
+                                  );
+                                },
                               ),
-                            if (searchResults
-                                .where((element) => element.category.isFood)
-                                .toList()
-                                .isEmpty)
-                              const Padding(
-                                padding: EdgeInsets.only(top: 80.0),
-                                child: _IsEmpty(),
-                              )
-                            else
-                              SizedBox(
-                                child: GridView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: searchResults
-                                      .where(
-                                        (element) => element.category.isFood,
-                                      )
-                                      .toList()
-                                      .length,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                        childAspectRatio: 0.85,
-                                        crossAxisCount: 3,
-                                        crossAxisSpacing: 30.0,
-                                        mainAxisSpacing: 30.0,
-                                      ),
-                                  itemBuilder: (context, index) => ProductCard(
-                                    data: searchResults
-                                        .where(
-                                          (element) => element.category.isFood,
-                                        )
-                                        .toList()[index],
-                                    onCartButton: () {},
-                                  ),
-                                ),
-                              ),
-                            if (searchResults
-                                .where((element) => element.category.isDrink)
-                                .toList()
-                                .isEmpty)
-                              const Padding(
-                                padding: EdgeInsets.only(top: 80.0),
-                                child: _IsEmpty(),
-                              )
-                            else
-                              SizedBox(
-                                child: GridView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: searchResults
-                                      .where(
-                                        (element) => element.category.isDrink,
-                                      )
-                                      .toList()
-                                      .length,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                        childAspectRatio: 0.85,
-                                        crossAxisCount: 3,
-                                        crossAxisSpacing: 30.0,
-                                        mainAxisSpacing: 30.0,
-                                      ),
-                                  itemBuilder: (context, index) => ProductCard(
-                                    data: searchResults
-                                        .where(
-                                          (element) => element.category.isDrink,
-                                        )
-                                        .toList()[index],
-                                    onCartButton: () {},
-                                  ),
-                                ),
-                              ),
-                            if (searchResults
-                                .where((element) => element.category.isSnack)
-                                .toList()
-                                .isEmpty)
-                              const Padding(
-                                padding: EdgeInsets.only(top: 80.0),
-                                child: _IsEmpty(),
-                              )
-                            else
-                              SizedBox(
-                                child: GridView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: searchResults
-                                      .where(
-                                        (element) => element.category.isSnack,
-                                      )
-                                      .toList()
-                                      .length,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                        childAspectRatio: 0.85,
-                                        crossAxisCount: 3,
-                                        crossAxisSpacing: 30.0,
-                                        mainAxisSpacing: 30.0,
-                                      ),
-                                  itemBuilder: (context, index) => ProductCard(
-                                    data: searchResults
-                                        .where(
-                                          (element) => element.category.isSnack,
-                                        )
-                                        .toList()[index],
-                                    onCartButton: () {},
-                                  ),
-                                ),
-                              ),
+                            ),
+
+                            // if (searchResults
+                            //     .where((element) => element.category.isFood)
+                            //     .toList()
+                            //     .isEmpty)
+                            //   const Padding(
+                            //     padding: EdgeInsets.only(top: 80.0),
+                            //     child: _IsEmpty(),
+                            //   )
+                            // else
+                            //   SizedBox(
+                            //     child: GridView.builder(
+                            //       shrinkWrap: true,
+                            //       itemCount: searchResults
+                            //           .where(
+                            //             (element) => element.category.isFood,
+                            //           )
+                            //           .toList()
+                            //           .length,
+                            //       physics: const NeverScrollableScrollPhysics(),
+                            //       gridDelegate:
+                            //           const SliverGridDelegateWithFixedCrossAxisCount(
+                            //             childAspectRatio: 0.85,
+                            //             crossAxisCount: 3,
+                            //             crossAxisSpacing: 30.0,
+                            //             mainAxisSpacing: 30.0,
+                            //           ),
+                            //       itemBuilder: (context, index) => ProductCard(
+                            //         data: searchResults
+                            //             .where(
+                            //               (element) => element.category.isFood,
+                            //             )
+                            //             .toList()[index],
+                            //         onCartButton: () {},
+                            //       ),
+                            //     ),
+                            //   ),
+
+                            // if (searchResults
+                            //     .where((element) => element.category.isDrink)
+                            //     .toList()
+                            //     .isEmpty)
+                            //   const Padding(
+                            //     padding: EdgeInsets.only(top: 80.0),
+                            //     child: _IsEmpty(),
+                            //   )
+                            // else
+                            //   SizedBox(
+                            //     child: GridView.builder(
+                            //       shrinkWrap: true,
+                            //       itemCount: searchResults
+                            //           .where(
+                            //             (element) => element.category.isDrink,
+                            //           )
+                            //           .toList()
+                            //           .length,
+                            //       physics: const NeverScrollableScrollPhysics(),
+                            //       gridDelegate:
+                            //           const SliverGridDelegateWithFixedCrossAxisCount(
+                            //             childAspectRatio: 0.85,
+                            //             crossAxisCount: 3,
+                            //             crossAxisSpacing: 30.0,
+                            //             mainAxisSpacing: 30.0,
+                            //           ),
+                            //       itemBuilder: (context, index) => ProductCard(
+                            //         data: searchResults
+                            //             .where(
+                            //               (element) => element.category.isDrink,
+                            //             )
+                            //             .toList()[index],
+                            //         onCartButton: () {},
+                            //       ),
+                            //     ),
+                            //   ),
+
+                            // if (searchResults
+                            //     .where((element) => element.category.isSnack)
+                            //     .toList()
+                            //     .isEmpty)
+                            //   const Padding(
+                            //     padding: EdgeInsets.only(top: 80.0),
+                            //     child: _IsEmpty(),
+                            //   )
+                            // else
+                            //   SizedBox(
+                            //     child: GridView.builder(
+                            //       shrinkWrap: true,
+                            //       itemCount: searchResults
+                            //           .where(
+                            //             (element) => element.category.isSnack,
+                            //           )
+                            //           .toList()
+                            //           .length,
+                            //       physics: const NeverScrollableScrollPhysics(),
+                            //       gridDelegate:
+                            //           const SliverGridDelegateWithFixedCrossAxisCount(
+                            //             childAspectRatio: 0.85,
+                            //             crossAxisCount: 3,
+                            //             crossAxisSpacing: 30.0,
+                            //             mainAxisSpacing: 30.0,
+                            //           ),
+                            //       itemBuilder: (context, index) => ProductCard(
+                            //         data: searchResults
+                            //             .where(
+                            //               (element) => element.category.isSnack,
+                            //             )
+                            //             .toList()[index],
+                            //         onCartButton: () {},
+                            //       ),
+                            //     ),
+                            //   ),
                           ],
                         ),
                       ],
